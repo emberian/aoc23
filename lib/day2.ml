@@ -1,13 +1,26 @@
 open Core
 
-type color = Red | Green | Blue
+type color = Red | Green | Blue [@@deriving eq]
 type constraints = color -> int option
 type round = (color * int) list
 type game = int * round list
 
-let round_satisfies_constraints round (constrs : constraints) : bool =
-  List.for_all round ~f:(fun (color, count) ->
-      match constrs color with Some max -> count <= max | None -> true)
+let minumum_cubes_for_round (round : round) (c : color) : int =
+  Option.value ~default:0
+    (List.fold round ~init:None ~f:(fun acc (color, count) ->
+         if phys_equal c color then
+           match acc with
+           | Some prevcount -> Some (max count prevcount)
+           | None -> Some count
+         else acc))
+
+let minimum_cubes_for_game ((_, rounds) : game) : color -> int =
+  let roundmins = List.map rounds ~f:minumum_cubes_for_round in
+  fun c ->
+    let mins_for_color = List.map roundmins ~f:(fun f -> f c) in
+    printf "mins_for_color: %s\n"
+      (Sexp.to_string (sexp_of_list sexp_of_int mins_for_color));
+    List.max_elt mins_for_color ~compare:Int.compare |> Option.value_exn
 
 let parse_game line : game =
   (* Parse a line like "Game 0: 3 red, 2 green; 2 blue, 2 green, 4 red" *)
@@ -29,21 +42,20 @@ let parse_game line : game =
                         | "blue" -> Blue
                         | _ -> failwith "bad color"),
                         Int.of_string (String.strip count) )
-                  | l -> failwithf "bad: %s" (Sexp.to_string (sexp_of_list sexp_of_string l)) ()))
+                  | l ->
+                      failwithf "bad: %s"
+                        (Sexp.to_string (sexp_of_list sexp_of_string l))
+                        ()))
   in
   (roundnum, contents)
 
 let read_input path =
   In_channel.with_file path ~f:(fun file ->
       In_channel.fold_lines file ~init:0 ~f:(fun acc line ->
-          let roundnum, contents = parse_game line in
-          if
-            List.for_all contents ~f:(fun round ->
-                round_satisfies_constraints round (function
-                  | Red -> Some 12
-                  | Green -> Some 13
-                  | Blue -> Some 14))
-          then acc + roundnum
-          else acc))
+          let game = parse_game line in
+          let min_cubes = minimum_cubes_for_game game in
+          printf "Game (%s): R %d G %d B %d\n" line (min_cubes Red)
+            (min_cubes Green) (min_cubes Blue);
+          acc + (min_cubes Red * min_cubes Green * min_cubes Blue)))
 
 let go () = printf "%d\n" (read_input "input.txt")
