@@ -1,6 +1,6 @@
 open Core
 
-type color = Red | Green | Blue [@@deriving eq]
+type color = Red | Green | Blue [@@deriving compare]
 type constraints = color -> int option
 type round = (color * int) list
 type game = int * round list
@@ -8,7 +8,7 @@ type game = int * round list
 let minumum_cubes_for_round (round : round) (c : color) : int =
   Option.value ~default:0
     (List.fold round ~init:None ~f:(fun acc (color, count) ->
-         if phys_equal c color then
+         if [%compare.equal: color] c color then
            match acc with
            | Some prevcount -> Some (max count prevcount)
            | None -> Some count
@@ -18,8 +18,6 @@ let minimum_cubes_for_game ((_, rounds) : game) : color -> int =
   let roundmins = List.map rounds ~f:minumum_cubes_for_round in
   fun c ->
     let mins_for_color = List.map roundmins ~f:(fun f -> f c) in
-    printf "mins_for_color: %s\n"
-      (Sexp.to_string (sexp_of_list sexp_of_int mins_for_color));
     List.max_elt mins_for_color ~compare:Int.compare |> Option.value_exn
 
 let parse_game line : game =
