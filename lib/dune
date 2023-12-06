@@ -1,5 +1,5 @@
 (library
  (name aoc)
- (libraries core re2)
+ (libraries core re2 bignum)
  (preprocess
   (pps ppx_jane)))

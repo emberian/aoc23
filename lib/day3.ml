@@ -62,13 +62,18 @@ let grid_foldi g ~init ~f =
   loop 0 0 init
 
 let sum_gear_ratios (g : grid) : int =
-  let potential_gears = grid_foldi g ~init:[] ~f:(fun pos c acc -> 
-    if Char.equal c '*' then 
-      let nearby_number_pos = neighborhood_around g pos |> List.filter ~f:(fun (c, _) -> 
-        Char.is_digit c) in
-      pos :: acc
-    else acc) in
-  
+  let potential_gears =
+    grid_foldi g ~init:[] ~f:(fun pos c acc ->
+        if Char.equal c '*' then
+          let _nearby_number_pos =
+            neighborhood_around g pos
+            |> List.filter ~f:(fun (c, _) -> Char.is_digit c)
+          in
+          pos :: acc
+        else acc)
+  in
+  (List.nth_exn potential_gears 0).row
+
 let go () =
   let contents = In_channel.read_lines "input.txt" in
   let allsum =
