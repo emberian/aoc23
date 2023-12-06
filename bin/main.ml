@@ -1,1 +1,1 @@
-let () = Aoc.Day4.go ()
+let () = Aoc.Day5.go ()
