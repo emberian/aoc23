@@ -123,7 +123,8 @@ let compose_maps (m1 : ('a, 'b) map_entry array) (m2 : ('b, 'c) map_entry array)
       else
     { e with dest_start = mapping m2 e.dest_start; }
   in
-
+(* idea for the morning: compose all the maps together, and then scan the resulting array
+   for its lowest dest_start value and give the preimage of its endpoint *)
 let go () =
   let all_maps = read_file (In_channel.read_lines "input.txt") in
   let locations = Array.map all_maps.seeds ~f:(seeds_to_location all_maps) in
