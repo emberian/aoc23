@@ -19,7 +19,7 @@
  (name aoc)
  (synopsis "A short synopsis")
  (description "A longer description")
- (depends ocaml dune core re2 bignum)
+ (depends ocaml dune core re2 bignum zarith)
  (tags
   (topics "to describe" your project)))
 
