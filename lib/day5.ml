@@ -113,7 +113,7 @@ let seed_to_location (maps : all_maps) (seed : [`Seed] index) =
 let inject_seeds : ([`Seed] index * Bigint.t) array -> ([`Seed], [`Seed]) map_entry array =
   fun seeds ->
   Array.map seeds ~f:(fun (seed, len) -> { dest_start = seed; src_start = seed; range_length = len})
-
+(*
 let compose_maps (m1 : ('a, 'b) map_entry array) (m2 : ('b, 'c) map_entry array) : ('a, 'c) map_entry array =
   let lift_entry : type a b c. (a, b) map_entry -> (a, c) map_entry list =
     fun e ->
@@ -131,3 +131,4 @@ let go () =
   printf "%s\n"
     (Array.min_elt locations ~compare:Bigint.compare
     |> Option.value_exn |> Bigint.to_string)
+*)

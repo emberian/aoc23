@@ -13,6 +13,8 @@ depends: [
   "ocaml"
   "dune" {>= "3.3"}
   "core"
+  "re2"
+  "bignum"
   "odoc" {with-doc}
 ]
 build: [
