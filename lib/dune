@@ -1,5 +1,12 @@
 (library
  (name aoc)
- (libraries core re2 bignum zarith)
+ (libraries core re2 bignum zarith choice)
+ (flags (-rectypes))
+ (inline_tests)
  (preprocess
-  (pps ppx_jane)))
+  (pps
+   OCanren-ppx.ppx_repr
+   OCanren-ppx.ppx_fresh
+   OCanren-ppx.ppx_distrib
+   ppx_jane
+   ppx_inline_test)))

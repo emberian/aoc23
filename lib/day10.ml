@@ -11,22 +11,17 @@ type 'a grid = 'a array array
 type pos = { row : int; col : int }
 
 let neighborhood_around (g : node grid) (p : pos) : (node * pos) Sequence.t =
+  let open Sequence in
   let offsets = [ -1; 0; 1 ] in
-  let neighbors =
-    Sequence.(cartesian_product (of_list offsets) (of_list offsets))
-  in
-  let neighbors =
-    Sequence.filter neighbors ~f:(fun (x, y) -> x <> 0 || y <> 0)
-  in
-  let neighbors =
-    Sequence.map neighbors ~f:(fun (x, y) ->
-        { row = p.row + x; col = p.col + y })
-  in
-  let neighbors =
-    Sequence.filter neighbors ~f:(fun { row; col } ->
-        row >= 0 && row < Array.length g && col >= 0 && col < Array.length g.(0))
-  in
-  Sequence.map neighbors ~f:(fun { row; col } -> (g.(row).(col), p))
+  cartesian_product (of_list offsets) (of_list offsets)
+  |> filter ~f:(fun (x, y) -> x <> 0 || y <> 0)
+  |> map ~f:(fun (x, y) -> { row = p.row + x; col = p.col + y })
+  |> filter ~f:(fun { row; col } ->
+         row >= 0
+         && row < Array.length g
+         && col >= 0
+         && col < Array.length g.(0))
+  |> map ~f:(fun { row; col } -> (g.(row).(col), p))
 
 let go () =
   let lines = In_channel.read_lines "input.txt" in
