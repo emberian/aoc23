@@ -15,6 +15,7 @@ depends: [
   "core"
   "re2"
   "bignum"
+  "zarith"
   "odoc" {with-doc}
 ]
 build: [
