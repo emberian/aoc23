@@ -1,6 +1,6 @@
 (library
  (name aoc)
- (libraries core re2 bignum zarith choice)
+ (libraries core re2 bignum zarith choice domainslib)
  (flags (-rectypes))
  (inline_tests)
  (preprocess
