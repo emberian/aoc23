@@ -14,7 +14,7 @@ let find_symmetry_in_digest (d : digest) : int option =
   let rec symmetry_at_point (d : digest) (ix : int) flipped =
     if ix > List.length d / 2 then
       symmetry_at_point (List.rev d) (List.length d - ix) true
-    else if ix = 0 then (false, 0)
+    else if ix = 0 then (false, ix)
     else
       let first_portion, rest = List.split_n d ix in
       let second_portion, straggler = List.split_n rest ix in
@@ -27,7 +27,7 @@ let find_symmetry_in_digest (d : digest) : int option =
 
 let render_board (b : char list list) = function
   | Some len ->
-      let first_half, second_half = List.split_n b len in
+      let first_half, second_half = List.split_n b (len - 1) in
       let first_half_str =
         List.map first_half ~f:String.of_char_list |> String.concat ~sep:"\n"
       in
